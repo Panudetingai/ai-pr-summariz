@@ -10,10 +10,11 @@ interface PullRequestContext {
   pullNumber: number;
 }
 
-function getInputs(): { openaiApiKey: string; githubToken: string } {
+function getInputs(): { openaiApiKey: string; githubToken: string, baseUrl: string | null } {
   const openaiApiKey = core.getInput('openai-api-key', { required: true });
   const githubToken = core.getInput('github-token', { required: true });
-  return { openaiApiKey, githubToken };
+  const baseUrl = core.getInput('base-url', { required: false }) || "https://api.openai.com/v1";
+  return { openaiApiKey, githubToken, baseUrl };
 }
 
 function getPullRequestContext(): PullRequestContext {
