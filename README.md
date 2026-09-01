@@ -124,6 +124,7 @@ To use the action in a different repository, publish it to the first repository 
   with:
     openai-api-key: ${{ secrets.OPENAI_API_KEY }}
     github-token: ${{ github.token }}
+    language: english
     # base-url: ${{ vars.OPENAI_BASE_URL }} # optional
 ```
 
@@ -144,6 +145,7 @@ git push origin main --tags
 | `openai-api-key` | yes | — | OpenAI API key for calling `gpt-4o-mini`. |
 | `github-token` | yes | `${{ github.token }}` | Built-in GitHub token (`github.token`) with permission to read the PR and post comments. |
 | `base-url` | no | `https://api.openai.com/v1` | OpenAI API base URL. Use this for proxies or OpenAI-compatible endpoints. |
+| `language` | no | `english` | Output language: `english` or `thai`. |
 
 ## Permissions Required
 
@@ -155,11 +157,11 @@ The workflow needs the following permissions:
 
 ## How It Works
 
-1. **Input extraction** — reads `openai-api-key` and `github-token`.
+1. **Input extraction** — reads `openai-api-key`, `github-token`, `base-url`, and `language`.
 2. **Context validation** — verifies the action is triggered by a `pull_request` event and extracts `owner`, `repo`, and `pull_number`.
 3. **Diff fetch** — calls `octokit.rest.pulls.get` with `mediaType: { format: 'diff' }`.
 4. **Diff truncation** — caps the diff at 8,000 characters to avoid exceeding token limits.
-5. **OpenAI summary** — sends a structured prompt to `gpt-4o-mini` and receives Markdown output.
+5. **OpenAI summary** — sends a structured prompt to `gpt-4o-mini`, instructing it to respond in the chosen `language`.
 6. **Comment posting** — publishes the summary as a PR comment using `octokit.rest.issues.createComment`.
 
 ## Customization

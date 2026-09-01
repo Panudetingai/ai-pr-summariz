@@ -17,6 +17,10 @@ inputs:
     description: 'OpenAI API base URL. If not provided, the action will use the default OpenAI API base URL.'
     required: false
     default: 'https://api.openai.com/v1'
+  language:
+    description: 'Output language for the summary: "english" or "thai".'
+    required: false
+    default: 'english'
 
 runs:
   using: 'node20'
