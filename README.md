@@ -94,11 +94,14 @@ This uses `@vercel/ncc` to compile `src/index.ts` and all dependencies into a si
      summarize:
        runs-on: ubuntu-latest
        steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+
          - name: Summarize PR with AI
            uses: ./
            with:
              openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-             github-token: ${{ secrets.GITHUB_TOKEN }}
+             github-token: ${{ github.token }}
    ```
 
 4. Add `OPENAI_API_KEY` to the repository secrets:
@@ -106,6 +109,8 @@ This uses `@vercel/ncc` to compile `src/index.ts` and all dependencies into a si
    - Click **New repository secret**.
    - Name: `OPENAI_API_KEY`
    - Value: your OpenAI API key.
+
+   > **Note:** GitHub reserves the `GITHUB_` prefix for built-in secrets and variables. Do not create custom secrets named `GITHUB_*` (e.g. `GITHUB_PAT`). The action uses `github.token` (the built-in `GITHUB_TOKEN`) by default, so no custom GitHub token secret is required.
 
 5. Open a new pull request. The action will run and post an AI-generated summary comment.
 
@@ -118,7 +123,9 @@ To use the action in a different repository, publish it to the first repository 
   uses: <owner>/<repo>@v1
   with:
     openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-    github-token: ${{ secrets.GITHUB_TOKEN }}
+    github-token: ${{ github.token }}
+    language: english
+    # base-url: ${{ vars.OPENAI_BASE_URL }} # optional
 ```
 
 For a reusable action, create a release tag after every update and ensure `dist/index.js` is committed:
@@ -136,7 +143,9 @@ git push origin main --tags
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `openai-api-key` | yes | — | OpenAI API key for calling `gpt-4o-mini`. |
-| `github-token` | yes | `${{ github.token }}` | GitHub token with permission to read the PR and post comments. |
+| `github-token` | yes | `${{ github.token }}` | Built-in GitHub token (`github.token`) with permission to read the PR and post comments. |
+| `base-url` | no | `https://api.openai.com/v1` | OpenAI API base URL. Use this for proxies or OpenAI-compatible endpoints. |
+| `language` | no | `english` | Output language: `english` or `thai`. |
 
 ## Permissions Required
 
@@ -148,11 +157,11 @@ The workflow needs the following permissions:
 
 ## How It Works
 
-1. **Input extraction** — reads `openai-api-key` and `github-token`.
+1. **Input extraction** — reads `openai-api-key`, `github-token`, `base-url`, and `language`.
 2. **Context validation** — verifies the action is triggered by a `pull_request` event and extracts `owner`, `repo`, and `pull_number`.
 3. **Diff fetch** — calls `octokit.rest.pulls.get` with `mediaType: { format: 'diff' }`.
 4. **Diff truncation** — caps the diff at 8,000 characters to avoid exceeding token limits.
-5. **OpenAI summary** — sends a structured prompt to `gpt-4o-mini` and receives Markdown output.
+5. **OpenAI summary** — sends a structured prompt to `gpt-4o-mini`, instructing it to respond in the chosen `language`.
 6. **Comment posting** — publishes the summary as a PR comment using `octokit.rest.issues.createComment`.
 
 ## Customization
@@ -172,3 +181,4 @@ The workflow needs the following permissions:
 ## License
 
 MIT
+# test

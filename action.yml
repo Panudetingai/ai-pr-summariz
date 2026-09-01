@@ -10,13 +10,17 @@ inputs:
     description: 'OpenAI API key for calling gpt-4o-mini. If not provided, the action will use the default OpenAI API base URL.'
     required: true
   github-token:
-    description: 'GitHub token with permissions to read PRs and post comments.'
+    description: 'GitHub token (github.token) with permissions to read PRs and post comments.'
     required: true
     default: ${{ github.token }}
   base-url:
     description: 'OpenAI API base URL. If not provided, the action will use the default OpenAI API base URL.'
     required: false
     default: 'https://api.openai.com/v1'
+  language:
+    description: 'Output language for the summary: "english" or "thai".'
+    required: false
+    default: 'english'
 
 runs:
   using: 'node20'

@@ -13,9 +13,13 @@ jobs:
   summarize:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Summarize PR with AI
         uses: ./
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
+          language: english
           base-url: ${{ secrets.BASE_URL }}
