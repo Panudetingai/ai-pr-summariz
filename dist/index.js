@@ -35687,7 +35687,8 @@ const MAX_DIFF_CHARS = 8000;
 function getInputs() {
     const openaiApiKey = core.getInput('openai-api-key', { required: true });
     const githubToken = core.getInput('github-token', { required: true });
-    return { openaiApiKey, githubToken };
+    const baseUrl = core.getInput('base-url', { required: false }) || "https://api.openai.com/v1";
+    return { openaiApiKey, githubToken, baseUrl };
 }
 function getPullRequestContext() {
     const payload = github.context.payload;
@@ -35779,10 +35780,10 @@ async function postCommentOnPullRequest(octokit, context, body) {
 }
 async function run() {
     try {
-        const { openaiApiKey, githubToken } = getInputs();
+        const { openaiApiKey, githubToken, baseUrl } = getInputs();
         const context = getPullRequestContext();
         const octokit = github.getOctokit(githubToken);
-        const openai = new openai_1.default({ apiKey: openaiApiKey });
+        const openai = new openai_1.default({ apiKey: openaiApiKey, baseURL: baseUrl });
         const rawDiff = await fetchPullRequestDiff(octokit, context);
         if (rawDiff.length === 0) {
             core.info('Pull request diff is empty; nothing to summarize.');

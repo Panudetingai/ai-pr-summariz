@@ -147,11 +147,11 @@ async function postCommentOnPullRequest(
 
 async function run(): Promise<void> {
   try {
-    const { openaiApiKey, githubToken } = getInputs();
+    const { openaiApiKey, githubToken, baseUrl } = getInputs();
     const context = getPullRequestContext();
 
     const octokit = github.getOctokit(githubToken);
-    const openai = new OpenAI({ apiKey: openaiApiKey });
+    const openai = new OpenAI({ apiKey: openaiApiKey, baseURL: baseUrl });
 
     const rawDiff = await fetchPullRequestDiff(octokit, context);
 
