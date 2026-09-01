@@ -1,0 +1,19 @@
+name: 'AI PR Summarizer'
+description: 'Automatically summarizes pull request diffs using OpenAI and posts a structured comment.'
+author: 'Your Name or Organization'
+branding:
+  icon: 'message-square'
+  color: 'blue'
+
+inputs:
+  openai-api-key:
+    description: 'OpenAI API key for calling gpt-4o-mini.'
+    required: true
+  github-token:
+    description: 'GitHub token with permissions to read PRs and post comments.'
+    required: true
+    default: ${{ github.token }}
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
