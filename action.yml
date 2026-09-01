@@ -10,7 +10,7 @@ inputs:
     description: 'OpenAI API key for calling gpt-4o-mini. If not provided, the action will use the default OpenAI API base URL.'
     required: true
   github-token:
-    description: 'GitHub token with permissions to read PRs and post comments.'
+    description: 'GitHub token (github.token) with permissions to read PRs and post comments.'
     required: true
     default: ${{ github.token }}
   base-url:

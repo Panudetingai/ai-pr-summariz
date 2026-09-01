@@ -98,7 +98,7 @@ This uses `@vercel/ncc` to compile `src/index.ts` and all dependencies into a si
            uses: ./
            with:
              openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-             github-token: ${{ secrets.GITHUB_TOKEN }}
+             github-token: ${{ github.token }}
    ```
 
 4. Add `OPENAI_API_KEY` to the repository secrets:
@@ -106,6 +106,8 @@ This uses `@vercel/ncc` to compile `src/index.ts` and all dependencies into a si
    - Click **New repository secret**.
    - Name: `OPENAI_API_KEY`
    - Value: your OpenAI API key.
+
+   > **Note:** GitHub reserves the `GITHUB_` prefix for built-in secrets and variables. Do not create custom secrets named `GITHUB_*` (e.g. `GITHUB_PAT`). The action uses `github.token` (the built-in `GITHUB_TOKEN`) by default, so no custom GitHub token secret is required.
 
 5. Open a new pull request. The action will run and post an AI-generated summary comment.
 
@@ -118,7 +120,7 @@ To use the action in a different repository, publish it to the first repository 
   uses: <owner>/<repo>@v1
   with:
     openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-    github-token: ${{ secrets.GITHUB_TOKEN }}
+    github-token: ${{ github.token }}
 ```
 
 For a reusable action, create a release tag after every update and ensure `dist/index.js` is committed:
@@ -136,7 +138,7 @@ git push origin main --tags
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `openai-api-key` | yes | — | OpenAI API key for calling `gpt-4o-mini`. |
-| `github-token` | yes | `${{ github.token }}` | GitHub token with permission to read the PR and post comments. |
+| `github-token` | yes | `${{ github.token }}` | Built-in GitHub token (`github.token`) with permission to read the PR and post comments. |
 
 ## Permissions Required
 
