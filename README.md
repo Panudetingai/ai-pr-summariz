@@ -94,6 +94,9 @@ This uses `@vercel/ncc` to compile `src/index.ts` and all dependencies into a si
      summarize:
        runs-on: ubuntu-latest
        steps:
+         - name: Checkout repository
+           uses: actions/checkout@v4
+
          - name: Summarize PR with AI
            uses: ./
            with:
@@ -121,6 +124,7 @@ To use the action in a different repository, publish it to the first repository 
   with:
     openai-api-key: ${{ secrets.OPENAI_API_KEY }}
     github-token: ${{ github.token }}
+    # base-url: ${{ vars.OPENAI_BASE_URL }} # optional
 ```
 
 For a reusable action, create a release tag after every update and ensure `dist/index.js` is committed:
@@ -139,6 +143,7 @@ git push origin main --tags
 |-------|----------|---------|-------------|
 | `openai-api-key` | yes | — | OpenAI API key for calling `gpt-4o-mini`. |
 | `github-token` | yes | `${{ github.token }}` | Built-in GitHub token (`github.token`) with permission to read the PR and post comments. |
+| `base-url` | no | `https://api.openai.com/v1` | OpenAI API base URL. Use this for proxies or OpenAI-compatible endpoints. |
 
 ## Permissions Required
 
